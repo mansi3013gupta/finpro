@@ -2,10 +2,10 @@
 import React, { useState } from "react";
 
 const images = [
-  "/images/finance.svg",
-  "/images/finance2.svg",
-  "/images/finance3.svg",
-];
+  "finance1.jpg",
+  "finance2.jpg",
+  "finance3.jpg",
+].map((img) => process.env.PUBLIC_URL + img);
 
 const Carousel = () => {
   const [current, setCurrent] = useState(0);
