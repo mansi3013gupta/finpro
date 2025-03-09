@@ -8,12 +8,17 @@ import { Budgets, Expenses, Incomes } from "@/utils/schema";
 import BarChartDashboard from "./_components/BarChartDashboard";
 import BudgetItem from "./budgets/_components/BudgetItem";
 import ExpenseListTable from "./expenses/_components/ExpenseListTable";
+import { toast } from "sonner";
+
+
 function Dashboard() {
   const { user } = useUser();
 
   const [budgetList, setBudgetList] = useState([]);
   const [incomeList, setIncomeList] = useState([]);
   const [expensesList, setExpensesList] = useState([]);
+  const [predictions, setPredictions] = useState([]);
+
   useEffect(() => {
     user && getBudgetList();
   }, [user]);
@@ -74,17 +79,52 @@ function Dashboard() {
       .rightJoin(Expenses, eq(Budgets.id, Expenses.budgetId))
       .where(eq(Budgets.createdBy, user?.primaryEmailAddress.emailAddress))
       .orderBy(desc(Expenses.id));
-    setExpensesList(result);
+    
+  };
+
+  const fetchAndStorePredictions = async () => {
+    try {
+      const response = await fetch('http://localhost:8000/predict');
+      const data = await response.json();
+      
+console.log(data);
+setExpensesList(data.data);
+console.log(user);
+
+      if (data.message === "Predictions generated successfully") {
+        for (const prediction of data.data) {
+          await db.insert(Expenses).values({
+            name: `Predicted: ${prediction.name}`,
+            amount: prediction.predicted_amount,
+            budgetId: prediction.budgetid,
+            createdAt: new Date(prediction.date),
+         createdBy: user?.primaryEmailAddress.emailAddress,   
+          });
+        }
+        
+        await getBudgetList();
+        toast.success("Predictions stored successfully!");
+      }
+    } catch (error) {
+      console.error("Error storing predictions:", error); 
+      toast.error("Failed to store predictions");
+    }
   };
 
   return (
     <div className="p-8 bg-">
       <h2 className="font-bold text-4xl">Welcome, {user?.fullName} </h2>
+      <button 
+        onClick={fetchAndStorePredictions}
+        className="bg-blue-500 text-white px-4 py-2 rounded-lg mt-4"
+      >
+        Generate Predictions
+      </button>
       <p className="text-gray-500">
         Here's what happenning with your money, Lets Manage your expense
       </p>
 
-      <CardInfo budgetList={budgetList} incomeList={incomeList} />
+      
       <div className="grid grid-cols-1 lg:grid-cols-3 mt-6 gap-5">
         <div className="lg:col-span-2">
           <BarChartDashboard budgetList={budgetList} />

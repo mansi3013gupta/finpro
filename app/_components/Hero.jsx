@@ -13,7 +13,7 @@ function Hero() {
 
    
   
-      <div className="mt-6 w-full max-w-3xl">
+      <div className="mt-6 w-full h-[800px] max-w-7xl px-4">
         <Carousel />
       </div>
     </section>
