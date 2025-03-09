@@ -7,13 +7,38 @@ import {
   Sparkles,
   CircleDollarSign,
 } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 
 function CardInfo({ budgetList, incomeList }) {
   const [totalBudget, setTotalBudget] = useState(0);
   const [totalSpend, setTotalSpend] = useState(0);
   const [totalIncome, setTotalIncome] = useState(0);
   const [financialAdvice, setFinancialAdvice] = useState("");
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const carouselRef = useRef(null);
+
+  const cards = [
+    {
+      title: "Total Budget",
+      value: `$${formatNumber(totalBudget)}`,
+      Icon: PiggyBank,
+    },
+    {
+      title: "Total Spend",
+      value: `$${formatNumber(totalSpend)}`,
+      Icon: ReceiptText,
+    },
+    {
+      title: "No. Of Budget",
+      value: budgetList?.length,
+      Icon: Wallet,
+    },
+    {
+      title: "Sum of Income Streams",
+      value: `$${formatNumber(totalIncome)}`,
+      Icon: CircleDollarSign,
+    },
+  ];
 
   useEffect(() => {
     if (budgetList.length > 0 || incomeList.length > 0) {
@@ -35,6 +60,14 @@ function CardInfo({ budgetList, incomeList }) {
       fetchFinancialAdvice();
     }
   }, [totalBudget, totalIncome, totalSpend]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % cards.length);
+    }, 3000); // Change slide every 3 seconds
+
+    return () => clearInterval(interval);
+  }, [cards.length]);
 
   const CalculateCardInfo = () => {
     console.log(budgetList);
@@ -79,51 +112,42 @@ function CardInfo({ budgetList, incomeList }) {
             </div>
           </div>
 
-          <div className="mt-7 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            <div className="p-7 border rounded-2xl flex items-center justify-between">
-              <div>
-                <h2 className="text-sm">Total Budget</h2>
-                <h2 className="font-bold text-2xl">
-                  ${formatNumber(totalBudget)}
-                </h2>
-              </div>
-              <PiggyBank className="bg-blue-800 p-3 h-12 w-12 rounded-full text-white" />
+          <div className="mt-7 relative overflow-hidden">
+            <div 
+              ref={carouselRef}
+              className="flex transition-transform duration-500 ease-in-out"
+              style={{ transform: `translateX(-${currentIndex * 100}%)` }}
+            >
+              {cards.map((card, index) => (
+                <div
+                  key={index}
+                  className="min-w-full p-7 border rounded-2xl flex items-center justify-between
+                    hover:border-purple-500 hover:bg-purple-50 transition-all duration-200"
+                >
+                  <div>
+                    <h2 className="text-sm">{card.title}</h2>
+                    <h2 className="font-bold text-2xl">{card.value}</h2>
+                  </div>
+                  <card.Icon className="bg-purple-600 p-3 h-12 w-12 rounded-full text-white" />
+                </div>
+              ))}
             </div>
-            <div className="p-7 border rounded-2xl flex items-center justify-between">
-              <div>
-                <h2 className="text-sm">Total Spend</h2>
-                <h2 className="font-bold text-2xl">
-                  ${formatNumber(totalSpend)}
-                </h2>
-              </div>
-              <ReceiptText className="bg-blue-800 p-3 h-12 w-12 rounded-full text-white" />
-            </div>
-            <div className="p-7 border rounded-2xl flex items-center justify-between">
-              <div>
-                <h2 className="text-sm">No. Of Budget</h2>
-                <h2 className="font-bold text-2xl">{budgetList?.length}</h2>
-              </div>
-              <Wallet className="bg-blue-800 p-3 h-12 w-12 rounded-full text-white" />
-            </div>
-            <div className="p-7 border rounded-2xl flex items-center justify-between">
-              <div>
-                <h2 className="text-sm">Sum of Income Streams</h2>
-                <h2 className="font-bold text-2xl">
-                  ${formatNumber(totalIncome)}
-                </h2>
-              </div>
-              <CircleDollarSign className="bg-blue-800 p-3 h-12 w-12 rounded-full text-white" />
+            
+            <div className="flex justify-center mt-4 gap-2">
+              {cards.map((_, index) => (
+                <button
+                  key={index}
+                  className={`h-2 w-2 rounded-full transition-all duration-300 
+                    ${currentIndex === index ? 'bg-purple-600 w-4' : 'bg-gray-300'}`}
+                  onClick={() => setCurrentIndex(index)}
+                />
+              ))}
             </div>
           </div>
         </div>
       ) : (
-        <div className="mt-7 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {[1, 2, 3].map((item, index) => (
-            <div
-              className="h-[110px] w-full bg-slate-200 animate-pulse rounded-lg"
-              key={index}
-            ></div>
-          ))}
+        <div className="mt-7">
+          <div className="h-[110px] w-full bg-slate-200 animate-pulse rounded-lg"></div>
         </div>
       )}
     </div>

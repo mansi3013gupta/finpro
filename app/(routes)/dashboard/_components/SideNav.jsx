@@ -50,12 +50,12 @@ function SideNav() {
     //   icon: TrendingDownIcon,
     //   path: "/dashboard/debts",
     // },
-    {
-      id: 4,
-      name: "Upgrade",
-      icon: ShieldCheck,
-      path: "/dashboard/upgrade",
-    },
+   // {
+     // id: 4,
+     // name: "Upgrade",
+      //icon: ShieldCheck,
+      //path: "/dashboard/upgrade",
+    //},
   ];
   const path = usePathname();
 
@@ -70,7 +70,7 @@ function SideNav() {
         height={100}
         /> */}
       <div className="flex flex-row items-center">
-        <Image src={"./chart-donut.svg"} alt="logo" width={40} height={25} />
+        <Image src={"./chart-donut.svg"} alt="logo" width={90} height={50} />
         <span className="text-blue-800 font-bold text-xl">FinanSmart</span>
       </div>
       <div className="mt-5">
@@ -81,8 +81,8 @@ function SideNav() {
                     text-gray-500 font-medium
                     mb-2
                     p-4 cursor-pointer rounded-full
-                    hover:text-primary hover:bg-blue-100
-                    ${path == menu.path && "text-primary bg-blue-100"}
+                    hover:text-purple-600 hover:bg-purple-100
+                    ${path == menu.path && "text-purple-600 bg-purple-100"}
                     `}
             >
               <menu.icon />

@@ -9,7 +9,8 @@ function IncomeItem({ budget }) {
   return (
     <div
       className="p-5 border rounded-2xl
-    hover:shadow-md cursor-pointer h-[170px]"
+    hover:shadow-md hover:border-purple-500 hover:bg-purple-50 
+    cursor-pointer h-[170px] transition-all duration-200"
     >
       <div className="flex gap-2 items-center justify-between">
         <div className="flex gap-2 items-center">
