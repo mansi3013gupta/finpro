@@ -42,6 +42,36 @@ function Dashboard() {
     getAllExpenses();
     getIncomeList();
   };
+/*
+const getBudgetList = async () => {
+  try {
+    if (!user?.primaryEmailAddress?.emailAddress) {
+      console.error("User email not found.");
+      return;
+    }
+
+    const result = await db
+      .select({
+        ...getTableColumns(Budgets),
+        totalSpend: sql`COALESCE(sum(${Expenses.amount}), 0)`.mapWith(Number),
+        totalItem: sql`COALESCE(count(${Expenses.id}), 0)`.mapWith(Number),
+      })
+      .from(Budgets)
+      .leftJoin(Expenses, eq(Budgets.id, Expenses.budgetId))
+      .where(eq(Budgets.createdBy, user.primaryEmailAddress.emailAddress))
+      .groupBy(Budgets.id)
+      .orderBy(desc(Budgets.id));
+
+    console.log("Budget List:", result); // Debugging output
+
+    setBudgetList(result);
+    getAllExpenses();
+    getIncomeList();
+  } catch (error) {
+    console.error("Error fetching budget list:", error);
+  }
+};
+*/
 
   /**
    * Get Income stream list

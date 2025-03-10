@@ -5,7 +5,7 @@ import { Trash } from "lucide-react";
 import React from "react";
 import { toast } from "sonner";
 
-function ExpenseListTable({ expensesList, refreshData }) {
+function ExpenseListTable({ expensesList = [], refreshData }) {
   const deleteExpense = async (expense) => {
     const result = await db
       .delete(Expenses)
@@ -26,7 +26,7 @@ function ExpenseListTable({ expensesList, refreshData }) {
         <h2 className="font-bold">Date</h2>
         
       </div>
-      {expensesList.slice(0, 7).map((expenses, index) => (
+      { expensesList && expensesList.slice(0, 7).map((expenses, index) => (
         <div 
           key={index} 
           className={`grid grid-cols-5 p-2 ${
